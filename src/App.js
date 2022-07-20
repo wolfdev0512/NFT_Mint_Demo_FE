@@ -1,24 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState, useCallback } from "react";
+
+// @Components
+import MintingTool from "./Components/MintingTool";
+import InfoBubble from "./Components/InfoBubble";
+
+// @styled-component
+import { Layout, MainLayout } from "./App.styled";
 
 function App() {
+  const [totalSupply, setTotalSupply] = useState(0);
+
+  const getTotalSupply = useCallback(async () => {
+    const num = await window.contract.nft_total_supply();
+    setTotalSupply(num);
+    getTotalSupply();
+  }, []);
+
+  useEffect(() => {
+    getTotalSupply();
+  }, [getTotalSupply]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout>
+      <MainLayout>
+        <InfoBubble />
+        <MintingTool totalSupply={totalSupply} />
+      </MainLayout>
+    </Layout>
   );
 }
 
